@@ -5,13 +5,11 @@ import com.mmm.readers.ErrorCode;
 import com.mmm.readers.FullPage.*;
 import com.mmm.readers.modules.rfid.CertificateHandler;
 import net.idscan.dlparser.DLParser;
-import java.util.Arrays;
+import java.util.Base64;
 
 public class Main  {
 
-
     private static final String _KEY = "";
-
 
     public static void main(String[] args) {
 
@@ -22,28 +20,18 @@ public class Main  {
 
         Reader r = m.initialiseScanner(eh);
 
-        r.GetConfigDir(sb);
-        System.out.println(sb.toString());
-
-        ReaderState state = r.GetState();
-        System.out.println(state.toString());
-
         r.EnablePlugin("PDF417", true);
 
         boolean[] isEnabled = new boolean[1];
         r.IsPluginEnabled("PDF417", isEnabled);
         System.out.println(isEnabled.toString());
 
-        StringBuffer stringBuff = new StringBuffer();
-        r.GetPluginName(stringBuff, 1);
-        System.out.println(stringBuff.toString());
 
         int featureCount =  r.GetPluginFeatureCount("PDF417");
         System.out.println("Feature Count : " + featureCount );
 
         m.readDocument(r);
     }
-
 
     public Reader initialiseScanner(MyErrorHandler eh) {
         try {
@@ -64,30 +52,26 @@ public class Main  {
         }
     }
 
-
     public void readDocument(Reader reader) {
         ErrorCode errorCode = reader.ReadDocument();
-        String mrzData;
-
 
         if (errorCode == ErrorCode.NO_ERROR_OCCURRED) {
-//            byte[] rawMRZBytes = new byte[200];
-//            int[] rawMRZInts = new int[]{200};
-//
-//            if (reader.GetData(DataType.CD_CODELINE, rawMRZBytes, rawMRZInts) == ErrorCode.NO_ERROR_OCCURRED) {
-//                mrzData = new String(rawMRZBytes, 0, rawMRZInts[0] - 1);
-//                parseReaderString(mrzData);
-//            }
-
 
             PluginDataFeature pluginData = new PluginDataFeature();
             reader.FillPluginDataFeature("PDF417" , 0, pluginData);
 
             System.out.println(pluginData.toString());
+            String barcodeData = "";
+
+            PluginDataPart dataPart = (PluginDataPart) pluginData.puDataList.get(0);
+
+            barcodeData = Base64.getEncoder().encodeToString( dataPart.puData );
+
+            parseReaderString(barcodeData);
+
         }
         reader.Shutdown();
     }
-
 
     private String parseReaderString(String readerString) {
         DLParser parser = new DLParser();
@@ -162,6 +146,5 @@ public class Main  {
         }
         return null;
     }
-
-
+    
 }
