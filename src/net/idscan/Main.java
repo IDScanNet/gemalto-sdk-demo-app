@@ -9,6 +9,8 @@ import com.mmm.readers.FullPage.Reader;
 import com.mmm.readers.modules.rfid.CertificateHandler;
 import net.idscan.dlparser.DLParser;
 
+import java.util.Arrays;
+
 public class Main  {
 
     private static final String _KEY = "";
@@ -46,7 +48,7 @@ public class Main  {
         String mrzData;
 
         if (errorCode == ErrorCode.NO_ERROR_OCCURRED) {
-            
+
             byte[] rawMRZBytes = new byte[200];
             int[] rawMRZInts = new int[]{200};
 
@@ -54,8 +56,19 @@ public class Main  {
                 mrzData = new String(rawMRZBytes, 0, rawMRZInts[0] - 1);
                 parseReaderString(mrzData);
             }
+            /* PDF417
+            int var3 = 3000000;
+            byte[] var8 = new byte[var3];
+            int[] var7 = new int[]{var3};
+            if (reader.GetData(DataType.CD_BARCODE_PDF417, var8, var7)
+                    == ErrorCode.NO_ERROR_OCCURRED) {
+                System.out.println(Arrays.toString(var7));
+//                System.out.println(Arrays.toString(var8));
+            }
+            PDF417 */
 
         }
+
         reader.Shutdown();
     }
 
