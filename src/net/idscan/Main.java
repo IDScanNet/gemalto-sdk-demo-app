@@ -5,6 +5,8 @@ import com.mmm.readers.ErrorCode;
 import com.mmm.readers.FullPage.*;
 import com.mmm.readers.modules.rfid.CertificateHandler;
 import net.idscan.dlparser.DLParser;
+
+import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 
 public class Main  {
@@ -65,12 +67,13 @@ public class Main  {
 
             PluginDataPart dataPart = (PluginDataPart) pluginData.puDataList.get(0);
 
-            barcodeData = Base64.getEncoder().encodeToString( dataPart.puData );
+            barcodeData = new String(dataPart.puData,0,dataPart.puData[0]-1);
 
             parseReaderString(barcodeData);
 
         }
         reader.Shutdown();
+
     }
 
     private String parseReaderString(String readerString) {
@@ -79,7 +82,8 @@ public class Main  {
             System.out.println("Parser Version: " + parser.getVersion());
             parser.setup(_KEY);
 
-            DLParser.DLResult res = parser.parse(readerString.getBytes("UTF8"));
+            DLParser.DLResult res = parser.parse(readerString.getBytes(StandardCharsets.US_ASCII));
+
             //print result.
             System.out.println("Full name: " + res.fullName);
             System.out.println("First name: " + res.firstName);
@@ -144,7 +148,7 @@ public class Main  {
         } catch(Exception e) {
             e.printStackTrace();
         }
-        return null;
+         return null;
     }
     
 }
