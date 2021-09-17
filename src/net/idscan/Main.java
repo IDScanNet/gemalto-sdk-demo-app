@@ -7,7 +7,6 @@ import com.mmm.readers.modules.rfid.CertificateHandler;
 import net.idscan.dlparser.DLParser;
 
 import java.nio.charset.StandardCharsets;
-import java.util.Base64;
 
 public class Main  {
 
@@ -17,7 +16,6 @@ public class Main  {
 
         Main m = new Main();
 
-        StringBuffer sb = new StringBuffer();
         MyErrorHandler eh = new MyErrorHandler();
 
         Reader r = m.initialiseScanner(eh);
@@ -67,7 +65,7 @@ public class Main  {
 
             PluginDataPart dataPart = (PluginDataPart) pluginData.puDataList.get(0);
 
-            barcodeData = new String(dataPart.puData,0,dataPart.puData[0]-1);
+            barcodeData = new String(dataPart.puData,0,dataPart.puData.length-1);
 
             parseReaderString(barcodeData);
 
