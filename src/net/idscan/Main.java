@@ -2,29 +2,28 @@ package net.idscan;
 
 
 import com.mmm.readers.ErrorCode;
-import com.mmm.readers.FullPage.DataHandler;
-import com.mmm.readers.FullPage.DataType;
-import com.mmm.readers.FullPage.EventHandler;
-import com.mmm.readers.FullPage.Reader;
+import com.mmm.readers.FullPage.*;
 import com.mmm.readers.modules.rfid.CertificateHandler;
 import net.idscan.dlparser.DLParser;
+
+import java.nio.charset.StandardCharsets;
 
 public class Main  {
 
     private static final String _KEY = "";
 
     public static void main(String[] args) {
-        Main m = new Main();
-        MyErrorHandler eh = new MyErrorHandler();
 
-        Reader r = m.initialiseScanner(eh);
-        m.readDocument(r);
+    	 Main m = new Main();
+         MyErrorHandler eh = new MyErrorHandler();
+
+         Reader r = m.initialiseScanner(eh);
+         m.readDocument(r);
     }
-
 
     public Reader initialiseScanner(MyErrorHandler eh) {
         try {
-            Reader reader = new Reader();
+        	Reader reader = new Reader();
             reader.EnableLogging(true, 1, -1, "IDScanner.log");
 
             ErrorCode errorCode = reader.Initialise((DataHandler)null, (EventHandler)null, eh, (CertificateHandler)null, true, false, 0);
@@ -42,21 +41,22 @@ public class Main  {
     }
 
     public void readDocument(Reader reader) {
-        ErrorCode errorCode = reader.ReadDocument();
-        String mrzData;
+    	  ErrorCode errorCode = reader.ReadDocument();
+          String mrzData;
 
-        if (errorCode == ErrorCode.NO_ERROR_OCCURRED) {
-            
-            byte[] rawMRZBytes = new byte[200];
-            int[] rawMRZInts = new int[]{200};
+          if (errorCode == ErrorCode.NO_ERROR_OCCURRED) {
+              
+              byte[] rawMRZBytes = new byte[200];
+              int[] rawMRZInts = new int[]{200};
 
-            if (reader.GetData(DataType.CD_CODELINE, rawMRZBytes, rawMRZInts) == ErrorCode.NO_ERROR_OCCURRED) {
-                mrzData = new String(rawMRZBytes, 0, rawMRZInts[0] - 1);
-                parseReaderString(mrzData);
-            }
+              if (reader.GetData(DataType.CD_AAMVA_DATA, rawMRZBytes, rawMRZInts) == ErrorCode.NO_ERROR_OCCURRED) {
+                  mrzData = new String(rawMRZBytes, 0, rawMRZInts[0] - 1);
+                  parseReaderString(mrzData);
+              }
 
-        }
-        reader.Shutdown();
+          }
+          reader.Shutdown();
+
     }
 
     private String parseReaderString(String readerString) {
@@ -65,7 +65,8 @@ public class Main  {
             System.out.println("Parser Version: " + parser.getVersion());
             parser.setup(_KEY);
 
-            DLParser.DLResult res = parser.parse(readerString.getBytes("UTF8"));
+            DLParser.DLResult res = parser.parse(readerString.getBytes(StandardCharsets.US_ASCII));
+
             //print result.
             System.out.println("Full name: " + res.fullName);
             System.out.println("First name: " + res.firstName);
@@ -130,8 +131,7 @@ public class Main  {
         } catch(Exception e) {
             e.printStackTrace();
         }
-        return null;
+         return null;
     }
-
-
+    
 }
