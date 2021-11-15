@@ -1,6 +1,10 @@
 package src.net.idscan;
 
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
+
 import com.mmm.readers.ErrorCode;
 import com.mmm.readers.FullPage.DataHandler;
 import com.mmm.readers.FullPage.DataType;
@@ -12,7 +16,9 @@ import net.idscan.dlparser.DLParser;
 public class Main  {
 
     private static final String _KEY = "";
-
+    static String FILEPATH = "test";
+    static File file = new File(FILEPATH);
+    
     public static void main(String[] args) {
         Main m = new Main();
         MyErrorHandler eh = new MyErrorHandler();
@@ -56,10 +62,28 @@ public class Main  {
                     lImageBufferLen) == ErrorCode.NO_ERROR_OCCURRED) {
                
             	System.out.print(lImageBuffer);
+            	writeByte(lImageBuffer);
             }
 
         }
         reader.Shutdown();
+    }
+    
+    public static void writeByte(byte[] bytes){
+        try {
+  
+            OutputStream os = new FileOutputStream(file);
+  
+            os.write(bytes);
+            System.out.println("Successfully"
+                               + " byte inserted");
+  
+            os.close();
+        }
+  
+        catch (Exception e) {
+            System.out.println("Exception: " + e);
+        }
     }
 
     private String parseReaderString(String readerString) {
