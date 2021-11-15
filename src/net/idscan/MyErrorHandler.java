@@ -1,4 +1,4 @@
-package net.idscan;
+package src.net.idscan;
 
 import com.mmm.readers.ErrorCode;
 import com.mmm.readers.ErrorHandler;

@@ -1,4 +1,4 @@
-package net.idscan;
+package src.net.idscan;
 
 
 import com.mmm.readers.ErrorCode;
@@ -50,7 +50,7 @@ public class Main  {
             byte[] rawMRZBytes = new byte[200];
             int[] rawMRZInts = new int[]{200};
 
-            if (reader.GetData(DataType.CD_CODELINE, rawMRZBytes, rawMRZInts) == ErrorCode.NO_ERROR_OCCURRED) {
+            if (reader.GetData(DataType.CD_IMAGEVIS, rawMRZBytes, rawMRZInts) == ErrorCode.NO_ERROR_OCCURRED) {
                 mrzData = new String(rawMRZBytes, 0, rawMRZInts[0] - 1);
                 parseReaderString(mrzData);
             }
