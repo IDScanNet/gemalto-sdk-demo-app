@@ -44,15 +44,18 @@ public class Main  {
     public void readDocument(Reader reader) {
         ErrorCode errorCode = reader.ReadDocument();
         String mrzData;
-
+        int IMAGE_BUFFER_SIZE = 300000;
         if (errorCode == ErrorCode.NO_ERROR_OCCURRED) {
             
-            byte[] rawMRZBytes = new byte[200];
-            int[] rawMRZInts = new int[]{200};
+        	byte lImageBuffer[] = new byte[IMAGE_BUFFER_SIZE];
+            int lImageBufferLen[] = new int[1];
+            lImageBufferLen[0] = IMAGE_BUFFER_SIZE;
 
-            if (reader.GetData(DataType.CD_IMAGEVIS, rawMRZBytes, rawMRZInts) == ErrorCode.NO_ERROR_OCCURRED) {
-                mrzData = new String(rawMRZBytes, 0, rawMRZInts[0] - 1);
-                parseReaderString(mrzData);
+
+            if (reader.GetData(DataType.CD_IMAGEVIS,     lImageBuffer,
+                    lImageBufferLen) == ErrorCode.NO_ERROR_OCCURRED) {
+               
+            	System.out.print(lImageBuffer);
             }
 
         }
